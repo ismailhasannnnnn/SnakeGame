@@ -94,7 +94,7 @@ function Component(width, height, color, x, y, type) {
         // for(var i = 0; i < mySnakeGame.scoreNumber; i++){
         //     this.tail[mySnakeGame.scoreNumber] = new Component(30, 30, "red", tail[i].x, tail[i].y);
         // }
-        tailX.push(snakeY);
+        tailX.push(snakeX);
         tailY.push(snakeY);
         for(var i = 0; i < tailX.length - 1; i++){
             tailX[i] = tailX[i+1];
@@ -104,7 +104,10 @@ function Component(width, height, color, x, y, type) {
             tailY[i] = tailY[i+1];
         }
 
-        tailX[mySnakeGame.scoreNumber] = new Component(30, 30, "red", tailX[i], tailY[i]);
+        for(let i = 0; i < mySnakeGame.scoreNumber; i++){
+            tailX[i] = new Component(30, 30, "orange", tailX[i], tailY[i]);
+            tailY[i] = new Component(30, 30, "orange", tailX[i - 1], tailY[i - 1]);
+        }
     }
 }
 
@@ -146,16 +149,50 @@ function updateGameArea() {
     mySnake.speedY = 0;
     snakeX = mySnake.x;
     snakeY = mySnake.y;
-    if(mySnakeGame.key && mySnakeGame.key == 37)mySnake.speedX = -1;
-    if(mySnakeGame.key && mySnakeGame.key == 39)mySnake.speedX = 1;
-    if(mySnakeGame.key && mySnakeGame.key == 38)mySnake.speedY = -1;
-    if(mySnakeGame.key && mySnakeGame.key == 40)mySnake.speedY = 1;
+    if(mySnakeGame.key && mySnakeGame.key == 37){
+        mySnake.speedX = -1;
+        if(mySnakeGame.scoreNumber > 0){
+            for(let i = 0; i < mySnakeGame.scoreNumber; i++){
+            }
+        }
+    }
+    if(mySnakeGame.key && mySnakeGame.key == 39){
+        mySnake.speedX = 1;
+        if(mySnakeGame.scoreNumber > 0){
+            for(let i = 0; i < mySnakeGame.scoreNumber; i++){
+            }
+        }
+    }
+    if(mySnakeGame.key && mySnakeGame.key == 38){
+        mySnake.speedY = -1;
+        if(mySnakeGame.scoreNumber > 0){
+            for(let i = 0; i < mySnakeGame.scoreNumber; i++){
+            }
+        }
+    }
+    if(mySnakeGame.key && mySnakeGame.key == 40){
+        mySnake.speedY = 1;
+        if(mySnakeGame.scoreNumber > 0){
+            for(let i = 0; i < mySnakeGame.scoreNumber; i++){
+            }
+        }
+    }
     mySnake.newPos();
     myFood.newPos();
     score.text = "SCORE: " + mySnakeGame.scoreNumber;
     score.updatePiece();
     if(mySnakeGame.scoreNumber > 0){
-        tailX[mySnakeGame.scoreNumber].updatePiece();
+        // tailX[mySnakeGame.scoreNumber].updatePiece();
+        for(let i = 0; i < mySnakeGame.scoreNumber; i++){
+            tailX[i] = new Component(30, 30, "orange", tailX[i], tailY[i]);
+            tailX[i].x = snakeX;
+            tailX[i].y = snakeY;
+            tailX[i].newPos();
+            tailX[i].updatePiece();
+            tailY[i].newPos();
+            tailY[i].updatePiece();
+            console.log(tailX[i].speedX);
+        }
     }
     mySnake.updatePiece();
     myFood.updatePiece();
