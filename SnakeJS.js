@@ -4,10 +4,12 @@ let myFood, score;
 let foodPos;
 let newTail;
 let snakeSize = 30;
+let scoreNumber = 0;
 let snakeX;
 let snakeY;
 let tailX = [];
 let tailY = [];
+let objectList = [];
 
 
 
@@ -104,20 +106,26 @@ function Component(width, height, color, x, y, type) {
             tailY[i] = tailY[i+1];
         }
 
-        for(let i = 0; i < mySnakeGame.scoreNumber; i++){
+        for(let i = 0; i < scoreNumber; i++){
             tailX[i] = new Component(30, 30, "orange", tailX[i], tailY[i]);
             tailY[i] = new Component(30, 30, "orange", tailX[i - 1], tailY[i - 1]);
         }
+        tailX[scoreNumber - 1] = new Component(30, 30, "orange", tailX[scoreNumber], tailY[scoreNumber]);
     }
 }
 
 function updateGameArea() {
     if (mySnake.eat(myFood)) {
         myFood = new Component(30, 30, "blue", foodFlooring()*2, foodFlooring()*2);
-        mySnakeGame.scoreNumber++;
+        scoreNumber++;
+        // objectList[scoreNumber] = new Component(30, 30, "orange", snakeX, snakeY);
+        this.ctx = mySnakeGame.context;
+        this.ctx.fillStyle = "orange";
+        ctx.fillRect(snakeX, snakeY, 30, 30);
         mySnake.snakeGrow();
 
     }
+
     if(mySnake.x < mySnakeGame.canvas.width){
         mySnake.x += mySnakeGame.canvas.width;
         mySnake.updatePiece();
@@ -179,21 +187,25 @@ function updateGameArea() {
     }
     mySnake.newPos();
     myFood.newPos();
-    score.text = "SCORE: " + mySnakeGame.scoreNumber;
+    score.text = "SCORE: " + scoreNumber;
     score.updatePiece();
-    if(mySnakeGame.scoreNumber > 0){
-        // tailX[mySnakeGame.scoreNumber].updatePiece();
-        for(let i = 0; i < mySnakeGame.scoreNumber; i++){
-            tailX[i] = new Component(30, 30, "orange", tailX[i], tailY[i]);
-            tailX[i].x = snakeX;
-            tailX[i].y = snakeY;
-            tailX[i].newPos();
-            tailX[i].updatePiece();
-            tailY[i].newPos();
-            tailY[i].updatePiece();
-            console.log(tailX[i].speedX);
-        }
+    if(scoreNumber > 0){
+        tailX[scoreNumber - 1].updatePiece();
+        // for(let i = 0; i < scoreNumber; i++){
+        //     ctx.fillRect(tailX[i].x, tailX[i].y, 30, 30);
+        //     // tailX[i].x = snakeX;
+        //     // tailX[i].y = snakeY;
+        //     // tailX[scoreNumber - 1].x = tailX[i].x;
+        //     // tailX[scoreNumber - 1].Y = tailX[i].y;
+        //     tailX[scoreNumber - 1].newPos();
+        //     tailX[scoreNumber - 1].updatePiece();
+        //     tailX[i].newPos();
+        //     tailX[i].updatePiece();
+        //     tailY[i].newPos();
+        //     tailY[i].updatePiece();
+        // }
     }
+
     mySnake.updatePiece();
     myFood.updatePiece();
 }
@@ -227,8 +239,9 @@ let mySnakeGame = {
         this.interval = setInterval(updateGameArea, 100);
         window.addEventListener('keydown', function (e) {
             mySnakeGame.key = e.keyCode;
+            console.log(e.which);
             e.preventDefault();
-        })
+        });
     },
     clearField : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
