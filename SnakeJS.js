@@ -4,6 +4,7 @@ let myFood, score;
 let foodPos;
 let newTail;
 let snakeSize = 30;
+let ateFood = false;
 let scoreNumber = 0;
 let snakeX = [];
 let snakeY = [];
@@ -118,6 +119,7 @@ function Component(width, height, color, x, y, type) {
 
 function updateGameArea() {
     if (mySnake.eat(myFood)) {
+        ateFood = true;
         myFood = new Component(30, 30, "blue", foodFlooring(), foodFlooring());
         scoreNumber++;
         // this.ctx = mySnakeGame.context;
@@ -130,7 +132,16 @@ function updateGameArea() {
         }
 
 
+    }else{
+        ateFood = false;
     }
+
+        for(let i = 0; i < scoreNumber; i++){
+            if(mySnake.eat(snakeBoxes[i]) && !ateFood){
+                scoreNumber = 0;
+                mySnakeGame.exit;
+            }
+        }
 
     if(mySnake.x < mySnakeGame.canvas.width){
         mySnake.x += mySnakeGame.canvas.width;
@@ -189,6 +200,8 @@ function updateGameArea() {
             }
         }
     }
+    snakeX.unshift(mySnake.x);
+    snakeY.unshift(mySnake.y);
     mySnake.newPos();
     myFood.newPos();
     score.text = "SCORE: " + scoreNumber;
